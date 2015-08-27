@@ -9,10 +9,18 @@ for i in ojlist:
 def oj(ojname):
 	return oj_class[ojname.lower()]
 
-def fetch_user(judge,user):
-	ac = oj(judge).fetch_user(user)
-	ac = map(lambda pid:(judge,pid),ac)
-	return set(ac)
+def fetch_user(judge,user,status):
+	if status == "all":
+		st = list()
+		for sta in oj(judge).supportStatus:
+			st += oj(judge).fetch_user(user,sta)
+		st = map(lambda pid:(judge,pid),st)
+	else:
+#		print(1)
+		st = oj(judge).fetch_user(user,status)
+#		print(type(st))
+		st = map(lambda pid:(judge,pid),st)
+	return set(st)
 
 def get_url(prob):
 	judge, pid = prob

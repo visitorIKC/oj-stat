@@ -2,8 +2,14 @@ import sys
 from core.oj import oj
 
 def _fetch(judge_user):
-	judge,user = judge_user.split(":",1)
-	return oj.fetch_user(judge,user)
+	judge,user_status = judge_user.split(":",1)
+	if user_status.find(":",0) == -1 :
+		user = user_status
+		status = "ac"
+	else :
+		user,status = user_status.split(":",1)
+	status = status.lower();
+	return oj.fetch_user(judge,user,status)
 	
 def _process(expression):
 	# by visitorIKC
