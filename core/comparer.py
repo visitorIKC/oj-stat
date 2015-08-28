@@ -9,50 +9,36 @@ def _process(expression):
 	# by visitorIKC
 	Infinity_Number=2147483647
 	#print(expression)
-	add = expression.find('+')
-	sub = expression.find('-')
-	ins = expression.find('&')
-	brc = expression.find('(')
+	add = expression.rfind('+')
+	sub = expression.rfind('-')
+	ins = expression.rfind('&')
+	brc = expression.rfind(')')
 	if max(add,sub,ins,brc) == -1:
 		return _fetch(expression)
-	if add == -1:
-		add = Infinity_Number
-	if sub == -1:
-		sub = Infinity_Number
-	if ins == -1:
-		ins = Infinity_Number
-	if brc == -1:
-		brc = Infinity_Number
-	if add == min(add,sub,ins,brc):
+	if add == max(add,sub,ins,brc):
 		return _process(expression[:add]) | _process(expression[add+1:])
-	if sub == min(add,sub,ins,brc):
+	if sub == max(add,sub,ins,brc):
 		return _process(expression[:sub]) - _process(expression[sub+1:])
-	if ins == min(add,sub,ins,brc):
+	if ins == max(add,sub,ins,brc):
 		return _process(expression[:ins]) & _process(expression[ins+1:])
 	brcin = 1  # The pointer is now in how many pairs of ()
-	nowindex = brc+1
+	nowindex = brc - 1
 	while brcin != 0:
-		if expression[nowindex] == '(':
+		if expression[nowindex] == ')':
 			brcin += 1
-		elif expression[nowindex] == ')':
+		elif expression[nowindex] == '(':
 			brcin -= 1
-		nowindex += 1
-	if nowindex == len(expression):
+		nowindex -= 1
+	if nowindex == -1:
 		return _process(expression[1:len(expression)-1])
-	add = expression.find('+',nowindex-1)
-	sub = expression.find('-',nowindex-1)
-	ins = expression.find('&',nowindex-1)
-	if add == -1:
-		add = Infinity_Number
-	if sub == -1:
-		sub = Infinity_Number
-	if ins == -1:
-		ins = Infinity_Number
-	if add == min(add,sub,ins):
+	add = expression.rfind('+',0,nowindex+1)
+	sub = expression.rfind('-',0,nowindex+1)
+	ins = expression.rfind('&',0,nowindex+1)
+	if add == max(add,sub,ins):
 		return _process(expression[:add]) | _process(expression[add+1:])
-	if sub == min(add,sub,ins):
+	if sub == max(add,sub,ins):
 		return _process(expression[:sub]) - _process(expression[sub+1:])
-	if ins == min(add,sub,ins):
+	if ins == max(add,sub,ins):
 		return _process(expression[:ins]) & _process(expression[ins+1:])
 	
 def compare(expression):
